@@ -1,4 +1,5 @@
 import { Component, Input, OnInit, OnChanges, OnDestroy, SimpleChanges } from '@angular/core';
+import { interval, Subscription } from 'rxjs';
 
 //este es un componente hijo
 @Component({
@@ -11,8 +12,15 @@ export class PriceComponent implements OnInit, OnChanges, OnDestroy {
   @Input()
   public price:number = 0;
 
+  //creamos una nueva propiedad
+  //les ponemos el simbolo de $ para saber que es un observable
+  public interval$?: Subscription;
+
   ngOnInit(): void {
     console.log('Componente HIJO: ngOnInit');
+    //interval es un observable que emite valores de manera secuencial basado en un periodo de tiempo
+    this.interval$ = interval(1000).subscribe( value => console.log(`Tick: ${value}`));
+
   }
   ngOnChanges(changes: SimpleChanges): void {
     console.log('Componente HIJO: ngOnChanges');
@@ -20,6 +28,7 @@ export class PriceComponent implements OnInit, OnChanges, OnDestroy {
   }
   ngOnDestroy(): void {
     console.log('Componente HIJO: ngOnDestroy');
+    this.interval$?.unsubscribe(); //el unsubscribe cancela la suscripción de ese observable
   }
 
 
